@@ -130,7 +130,7 @@ curl -sS https://<your-service>.onrender.com/v1/models \
 | `BASE_URL` | Optional (`sync: false`) | Set after deploy to your `*.onrender.com` HTTPS origin |
 | `NEXT_PUBLIC_BASE_URL` | Optional (`sync: false`) | Keep equal to `BASE_URL` |
 
-Provider keys live in the dashboard SQLite DB on the disk. See [`.env.example`](./.env.example) and [DOCKER.md](./DOCKER.md).
+Provider keys live in the dashboard SQLite DB on the disk. See [`.env.example`](./.env.example) and upstream [DOCKER.md](https://github.com/decolua/9router/blob/master/DOCKER.md).
 
 ### Pin or float the image
 
@@ -191,7 +191,7 @@ assets/           Hero / logo
 - [Upstream repo](https://github.com/decolua/9router)
 - [Website](https://9router.com)
 - [Docker Hub](https://hub.docker.com/r/decolua/9router)
-- [DOCKER.md](./DOCKER.md)
+- [DOCKER.md](https://github.com/decolua/9router/blob/master/DOCKER.md)
 
 ## License
 
