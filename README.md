@@ -55,10 +55,10 @@ flowchart LR
 ### How It Works
 
 1. Click **Deploy to Render**. Render forks this template into your GitHub account and applies [`render.yaml`](./render.yaml).
-2. On Apply, set `INITIAL_PASSWORD`. Leave `BASE_URL` / `NEXT_PUBLIC_BASE_URL` blank until the service exists.
+2. On Apply, set `INITIAL_PASSWORD`. `BASE_URL` / `NEXT_PUBLIC_BASE_URL` are wired automatically from Render’s public URL.
 3. Render pulls `decolua/9router:0.5.45`, mounts a 5 GB disk at `/app/data`, and starts on port `20128`.
 4. Open the `*.onrender.com` URL, sign in, connect a provider, and copy a dashboard API key.
-5. Point your CLI at `https://<your-service>.onrender.com/v1`, then set `BASE_URL` and `NEXT_PUBLIC_BASE_URL` to that HTTPS origin and restart (needed for cloud sync and some OAuth callbacks).
+5. Point your CLI at `https://<your-service>.onrender.com/v1`.
 
 | Resource | Type | Plan | Notes |
 | --- | --- | --- | --- |
@@ -78,11 +78,10 @@ Default region: **oregon**. Storage is **SQLite on disk**, matching upstream Doc
 ### Deploy
 
 1. Click **Deploy to Render** above and fork into your GitHub account.
-2. On Apply, confirm the `9router` service and `9router-data` disk. Set `INITIAL_PASSWORD`. Leave the base URL fields empty.
+2. On Apply, confirm the `9router` service and `9router-data` disk. Set `INITIAL_PASSWORD`.
 3. Wait until the service is **Live** (~3-8 minutes; first image pull can take longer).
 4. Open the public URL, log in, connect a provider, and create or copy an API key.
-5. Set `BASE_URL` and `NEXT_PUBLIC_BASE_URL` to `https://<your-service>.onrender.com`, then Manual Deploy / restart.
-6. Configure your CLI tool:
+5. Configure your CLI tool:
 
 ```text
 Base URL: https://<your-service>.onrender.com/v1
@@ -127,10 +126,10 @@ curl -sS https://<your-service>.onrender.com/v1/models \
 | `INITIAL_PASSWORD` | Required (`sync: false`) | First-login password when no hash exists yet |
 | `REQUIRE_API_KEY` | Wired | `true`: Bearer key required on `/v1/*` |
 | `AUTH_COOKIE_SECURE` | Wired | `true`: Secure cookie behind Render HTTPS |
-| `BASE_URL` | Optional (`sync: false`) | Set after deploy to your `*.onrender.com` HTTPS origin |
-| `NEXT_PUBLIC_BASE_URL` | Optional (`sync: false`) | Keep equal to `BASE_URL` |
+| `BASE_URL` | Auto (`RENDER_EXTERNAL_URL`) | Public HTTPS origin for sync / OAuth callbacks |
+| `NEXT_PUBLIC_BASE_URL` | Auto (`RENDER_EXTERNAL_URL`) | Same value as `BASE_URL` |
 
-Provider keys live in the dashboard SQLite DB on the disk. See [`.env.example`](./.env.example) and upstream [DOCKER.md](https://github.com/decolua/9router/blob/master/DOCKER.md).
+Provider keys live in the dashboard SQLite DB on the disk. See [`.env.example`](./.env.example) and [DOCKER.md](./DOCKER.md).
 
 ### Pin or float the image
 
@@ -165,7 +164,7 @@ Provider subscriptions and API usage are billed by those providers. **Standard i
 | Image pull failures | Confirm `decolua/9router:0.5.45` on [Docker Hub](https://hub.docker.com/r/decolua/9router/tags). Retry deploy. |
 | Cannot log in on first visit | Set a non-empty `INITIAL_PASSWORD` at Apply time. |
 | `/v1` returns 401 | Create an API key in the dashboard. `REQUIRE_API_KEY=true` is intentional for public URLs. |
-| Cloud sync / OAuth callback issues | Set `BASE_URL` and `NEXT_PUBLIC_BASE_URL` to `https://<service>.onrender.com`, then restart. |
+| Cloud sync / OAuth callback issues | Confirm `BASE_URL` / `NEXT_PUBLIC_BASE_URL` mirror `RENDER_EXTERNAL_URL` (Blueprint self-wires these). Custom domains: update those keys to the custom origin. |
 | Data lost after redeploy | Disk must remain attached at `/app/data`. Snapshot before destructive changes. |
 
 ## Project Structure
@@ -174,7 +173,7 @@ Provider subscriptions and API usage are billed by those providers. **Standard i
 render.yaml       Render Blueprint (image + disk)
 README.md         This file
 LICENSE           MIT (template wrapper)
-.env.example      Env checklist for Apply / Dashboard
+.env.example      Upstream env contract
 assets/           Hero / logo
 ```
 
@@ -191,7 +190,7 @@ assets/           Hero / logo
 - [Upstream repo](https://github.com/decolua/9router)
 - [Website](https://9router.com)
 - [Docker Hub](https://hub.docker.com/r/decolua/9router)
-- [DOCKER.md](https://github.com/decolua/9router/blob/master/DOCKER.md)
+- [DOCKER.md](./DOCKER.md)
 
 ## License
 

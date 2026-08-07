@@ -55,9 +55,13 @@ projects:
                 value: "https://9router.com"
               - key: ENABLE_REQUEST_LOGS
                 value: "false"
-              # Set both to https://<your-service>.onrender.com after the first deploy
-              # (needed for cloud sync callbacks and some OAuth flows).
               - key: BASE_URL
-                sync: false
+                fromService:
+                  name: 9router
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
               - key: NEXT_PUBLIC_BASE_URL
-                sync: false
+                fromService:
+                  name: 9router
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
